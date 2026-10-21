@@ -521,6 +521,20 @@ jobs:
         working-directory: frontend/packages/sdk
         run: pnpm test
 
+      # `npx stellarcred` (frontend/packages/cli) reuses the SDK from source:
+      # typecheck, test (incl. the bundled binary), and build the package.
+      - name: Typecheck stellarcred CLI
+        working-directory: frontend/packages/cli
+        run: pnpm exec tsc --noEmit -p tsconfig.json
+
+      - name: Test stellarcred CLI
+        working-directory: frontend/packages/cli
+        run: pnpm exec vitest run
+
+      - name: Build stellarcred CLI
+        working-directory: frontend/packages/cli
+        run: npm run build && node dist/cli.mjs --version
+
       # Required privacy gate (issue #627). Runs the flow-level identity-leak
       # test on its own so a new persistence path that reintroduces identity
       # data — a log line, the audit file, the error-report sink, the
