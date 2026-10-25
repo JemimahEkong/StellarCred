@@ -393,6 +393,8 @@ describe("packaged binary", () => {
     });
   });
 
+  // Three sequential node spawns: comfortably over vitest's 5s default on
+  // Windows and cold runners (one spawn measures ~2s there, ~0.25s in CI).
   it("runs as a Node executable: --version, --help, verify-url", async () => {
     const { stdout: version } = await exec(process.execPath, [bin, "--version"], { cwd: pkgDir });
     expect(version.trim()).toBe("0.1.0");

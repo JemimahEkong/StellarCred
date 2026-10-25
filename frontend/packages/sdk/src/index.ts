@@ -71,7 +71,6 @@ import {
   ConfigError,
   InvalidAddressError,
 } from "./claims";
-
 import {
   RpcError,
   IndexerError,
@@ -80,22 +79,16 @@ import {
   parseContractError,
   TransactionSubmissionError,
 } from "./errors";
-
 import { submitTransaction } from "./submit";
-
 import { bootstrap, fetchCapabilities, validateCapabilitiesDescriptor } from "./capabilities";
-
 import { createWalletChallenge, verifyWalletSignature, verifyWalletClaim } from "./challenge";
-
 import { subscribeClaims } from "./subscriptions";
-
 import {
   validateCredential,
   parseCredentialJson,
   assertValidCredential,
   CredentialValidationError,
 } from "./validateCredential";
-
 import { getIssuer, isValidIssuer, listIssuerIds, listIssuers } from "./issuers";
 
 export const StellarCred = {

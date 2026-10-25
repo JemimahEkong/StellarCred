@@ -12,7 +12,11 @@ on:
 permissions:
   contents: read
   issues: write
-  pull-requests: read
+  # Labelling a *pull request* is authorised against pull-requests, not issues:
+  # with only `issues: write` the token gets 403 "Resource not accessible by
+  # integration" from POST /issues/{n}/labels, which failed every PR that was
+  # classified as a dependency update.
+  pull-requests: write
 
 concurrency:
   group: auto-label-deps-${{ github.event.pull_request.number }}

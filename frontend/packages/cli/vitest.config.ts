@@ -8,6 +8,9 @@ export default defineConfig({
   },
   test: {
     environment: "node",
+    // The packaged-binary test spawns node three times; that alone exceeds
+    // vitest's 5s default on Windows and cold runners.
+    testTimeout: 30_000,
     include: ["test/**/*.test.ts"],
   },
 });
