@@ -1,4 +1,3 @@
- feat/issues-847-848-820-841
 /**
  * _middleware.ts — Shared rate-limit middleware factory for API routes.
  *
@@ -59,18 +58,9 @@
  * are defined in `frontend/lib/rate-limit.ts` and apply to both stores.
  */
 
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { tooManyRequestsResponse } from "@/lib/rate-limit";
 import { checkLimitRedis } from "@/lib/redis-rate-limit";
-=======
-// frontend/app/api/_middleware.ts
-//
-// Shared error boundary and Sentry observability middleware for API routes (#853),
-// plus the route-level auth guards.
-
-import { NextResponse, type NextRequest } from "next/server";
- main
 import {
   withSentryRouteHandler,
   captureServerException,
@@ -179,13 +169,8 @@ export async function handleApiError(
       requestId,
       sentryEventId: eventId,
     },
- feat/issues-847-848-820-841
-    { status }
-  );
-
     { status },
   ) as unknown as NextResponse;
- main
 }
 
 // ── Auth guards ──────────────────────────────────────────────────────────────
