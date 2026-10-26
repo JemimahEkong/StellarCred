@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { previewCredential, type CredentialType } from "@stellarcred/issuer";
 import { bodyErrorResponse } from "@/lib/request-limits";
 import { logger, stripSensitiveFields, resolveRequestId } from "@/lib/logger";
 import { recordIssuance } from "@/lib/metrics";
@@ -233,6 +234,28 @@ async function executeRequest(
 
   const validated = validateIssueRequest(request, requestId, tenant);
   if (!validated.ok) return sendResponse(failureResponse(validated.failure));
+
+  if (validated.request.preview === true) {
+    try {
+      const previews = await Promise.all(
+        Array.from(new Set(validated.request.credentialTypes), (type) =>
+          previewCredential({
+            type: type as CredentialType,
+            holder: validated.request.holder,
+            issuerId: validated.request.issuerId,
+            issuerName: validated.request.issuerName,
+            expiry: validated.request.expiry,
+            attribute: validated.request.attributes,
+            claimParams: validated.request.claimParams,
+          }),
+        ),
+      );
+      outcome = "success";
+      return sendResponse(NextResponse.json({ preview: true, credentials: previews }));
+    } catch (e) {
+      return sendResponse(NextResponse.json({ error: (e as Error).message }, { status: 400 }));
+    }
+  }
 
   const issuerClient = await resolveIssuerClient(tenant);
   const registrationFailure = await validateIssuerRegistration(

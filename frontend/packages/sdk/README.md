@@ -412,6 +412,20 @@ Notes:
 
 ### `buildVerifyUrl(options)`
 
+Builds a StellarCred verification URL to redirect users to. `BuildVerifyUrlOptions` and `BuildVerifyUrlClaimParams` are exported from the package. After verifying, StellarCred returns the user to `returnUrl` with `?sc_verified=true&sc_wallet=<address>&sc_claims=<claim-types>` appended. `sc_claims` is a comma-separated list of the claim types issued in the current session (not all-time claims), allowing protocols to optimistically update their UI before an on-chain read completes.
+
+```ts
+import { buildVerifyUrl, type BuildVerifyUrlOptions } from "@stellarcred/sdk";
+
+const options = {
+  returnUrl: "https://yourapp.xyz/markets",
+  claim: "age",
+  claimParams: { threshold_years: "21" },
+  expiresInMinutes: 15,
+} satisfies BuildVerifyUrlOptions;
+
+const url = buildVerifyUrl(options);
+```
 Builds a strongly typed StellarCred verification URL to redirect users to. After verifying, StellarCred returns the user to `returnUrl` with `?sc_verified=true&sc_wallet=<address>&sc_claims=<claim-types>` appended. `sc_claims` is a comma-separated list of the claim types issued in the current session (not all-time claims), allowing protocols to optimistically update their UI before an on-chain read completes.
 
 ```ts
@@ -547,6 +561,8 @@ function gate(wallet: string, claim: ClaimType, opts?: ClaimOptions) {
 | -------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `ClaimType`    | `"kyc" \| "age" \| "income" \| "jurisdiction" \| "funds" \| "accreditation"`      | The credential types StellarCred supports. Mirrors the on-chain `CLAIM_TYPES` constant.                                                                                                                                                                                                                                                                                                    |
 | `ClaimOptions` | `{ minThreshold?: number; trustedIssuers?: string[]; requestTimeoutMs?: number }` | Optional settings for `hasClaim`. `minThreshold` is forwarded to the on-chain `check_claim` for parameterised claim types and ignored for binary claims (`kyc`, `jurisdiction`). `trustedIssuers` restricts which issuer(s) the proof must come from, for any claim type — omit to accept any registered issuer. `requestTimeoutMs` bounds the individual read and defaults to 10 seconds. |
+| `Claim`        | `{ type: string; verifiedAt: number; expiry: number }`                            | Shape returned by `getClaims`.                                                                                                                                                                                                                                                                                                                                                             |
+| `CLAIM_TYPES`  | `readonly ClaimType[]`                                                            | The runtime constant. Use `as const` strings for compile-time narrowing.                                                                                                                                                                                                                                                                                                                   |
 | `Claim` | `{ type: string; verifiedAt: number; expiry: number }` | Shape returned by `getClaims`. |
 | `CLAIM_TYPES` | `readonly ClaimType[]` | The runtime constant. Use `as const` strings for compile-time narrowing. |
 | `validateCredential` | `(value: unknown) => CredentialValidationResult` | Validates an already-parsed credential object and returns `{ valid, credential }` or `{ valid: false, errors }`. |
