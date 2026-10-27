@@ -7,7 +7,7 @@ on:
 permissions:
   contents: read
   issues: write
-  pull-requests: read
+  pull-requests: write
 
 concurrency:
   group: auto-label-deps-${{ github.event.pull_request.number }}
@@ -98,7 +98,6 @@ jobs:
                   return;
                 }
               }
-            }
 
             try {
               await github.rest.issues.addLabels({
@@ -114,4 +113,13 @@ jobs:
               return;
             }
 
-            core.info(`Applied '${labelName}' to PR #${pr.number}.`);
+              core.info(`Applied '${labelName}' to PR #${pr.number}.`);
+            } catch (error) {
+              if (error.status === 403) {
+                core.warning(
+                  `Insufficient permissions to apply label '${labelName}' to PR #${pr.number}: ${error.message}`
+                );
+              } else {
+                throw error;
+              }
+            }
