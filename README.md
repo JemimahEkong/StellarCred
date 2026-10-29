@@ -398,6 +398,7 @@ StellarCred spans four toolchains (Rust contracts, Noir zk-circuits, Next.js fro
 
 | Command | Workspace | Description |
 |---|---|---|
+| `make verify-deployment` | Verification | End-to-end verification of contract IDs, on-chain versions, reproducible WASM hashes, and VKs (`NETWORK=testnet|mainnet`). |
 | `make all` | All | Runs `build`, `test`, and `lint` across all workspaces (mirrors CI). |
 | `make build` | All | Builds Soroban contracts, frontend bundles, and indexer service. |
 | `make test` | All | Runs contract unit/snapshot tests, frontend/SDK tests, and indexer tests. |
